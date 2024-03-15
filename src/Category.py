@@ -62,7 +62,7 @@ class Category:
 
         return (f"Название: {self.name}\nОписание: {self.description}\nТовары: {self.prod}\nОбщее количество "
                 f"категорй: {self.total_categories}\nОбщее количество уникальных "
-                f"продуктов{self.total_unique_products}")
+                f"продуктов: {self.total_unique_products}")
 
     def add_prod(self, value):
         """
@@ -72,3 +72,4 @@ class Category:
         """
 
         self.prod.append(Product(value["name"], value["description"], value["price"], value["quantity"]))
+        self.total_unique_products += 1
