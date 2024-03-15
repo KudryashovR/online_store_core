@@ -12,4 +12,4 @@ class Product:
 
     def __repr__(self):
         return (f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКоличество в "
-                f"наличии{self.stock_quantity}")
+                f"наличии: {self.stock_quantity}")
