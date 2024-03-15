@@ -11,4 +11,5 @@ class Product:
         self.stock_quantity = stock_quantity
 
     def __repr__(self):
-        return f"{self.name} {self.description} {self.price} {self.stock_quantity}"
+        return (f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКоличество в "
+                f"наличии{self.stock_quantity}")
