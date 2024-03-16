@@ -8,7 +8,7 @@ class Category:
 
     name: str
     description: str
-    prod: list
+    __prod: list
     total_categories: int = 0
     total_unique_products: int
 
@@ -46,13 +46,13 @@ class Category:
 
         self.name = name
         self.description = description
-        self.prod = []
+        self.__prod = []
 
         if prod:
-            self.prod.append(Product(prod["name"], prod["description"], prod["price"], prod["quantity"]))
+            self.__prod.append(Product(prod["name"], prod["description"], prod["price"], prod["quantity"]))
 
         self.total_categories += 1
-        self.total_unique_products = len(self.prod)
+        self.total_unique_products = len(self.__prod)
 
     def __repr__(self):
         """
@@ -60,16 +60,16 @@ class Category:
         её имя, описание, перечень продуктов, общее количество категорий и общее количество уникальных продуктов.
         """
 
-        return (f"Название: {self.name}\nОписание: {self.description}\nТовары: {self.prod}\nОбщее количество "
+        return (f"Название: {self.name}\nОписание: {self.description}\nТовары: {self.__prod}\nОбщее количество "
                 f"категорй: {self.total_categories}\nОбщее количество уникальных "
                 f"продуктов: {self.total_unique_products}")
 
-    def add_prod(self, value):
+    def add_prod(self, new_product):
         """
         Добавляет продукт в категорию. Продукт представляется и передается как словарь с ключами "name", "description",
         "price", "quantity". Создает новый экземпляр класса Product с использованием этих данных и добавляет
         его в список 'prod'.
         """
 
-        self.prod.append(Product(value["name"], value["description"], value["price"], value["quantity"]))
+        self.__prod.append(new_product)
         self.total_unique_products += 1
