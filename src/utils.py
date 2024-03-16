@@ -1,8 +1,8 @@
 import json
 import os
 
-from src.Category import Category
-from src.Product import Product
+from Category import Category
+from Product import Product
 
 
 def load_products(filename):
@@ -62,7 +62,8 @@ def category_init(categories):
         categories_list.append(Category(item["name"], item["description"]))
 
         for prod in products:
-            product_obj = Product(prod["name"], prod["description"], prod["price"], prod["quantity"])
+            # product_obj = Product(prod["name"], prod["description"], prod["price"], prod["quantity"])
+            product_obj = Product.create_product(prod["name"], prod["description"], prod["price"], prod["quantity"])
             categories_list[index].add_prod(product_obj)
 
     return categories_list
