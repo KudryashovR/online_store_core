@@ -73,3 +73,12 @@ class Category:
 
         self.__prod.append(new_product)
         self.total_unique_products += 1
+
+    @property
+    def product(self):
+        result = ""
+
+        for item in self.__prod:
+            result += f"{item.name}, {item.price} руб. Остаток: {item.stock_quantity} шт.\n"
+
+        return result.rstrip()
