@@ -49,3 +49,7 @@ class Product:
 
         return (f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКоличество в "
                 f"наличии: {self.stock_quantity}")
+
+    @classmethod
+    def create_product(cls, name, description, price, stock_quantity):
+        return cls(name, description, price, stock_quantity)
