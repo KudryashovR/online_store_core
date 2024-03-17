@@ -60,6 +60,7 @@ def category_init(categories):
     for index, item in enumerate(categories):
         products = item["products"]
         categories_list.append(Category(item["name"], item["description"]))
+        products = Product.check_unique_items(products)
 
         for prod in products:
             # product_obj = Product(prod["name"], prod["description"], prod["price"], prod["quantity"])
