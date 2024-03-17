@@ -82,3 +82,7 @@ class Category:
             result += f"{item.name}, {item.price} руб. Остаток: {item.stock_quantity} шт.\n"
 
         return result.rstrip()
+
+    @property
+    def prod(self):
+        return self.__prod

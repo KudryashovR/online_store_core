@@ -38,7 +38,7 @@ class Product:
 
         self.name = name
         self.description = description
-        self.price = price
+        self.__price = price
         self.stock_quantity = stock_quantity
 
     def __repr__(self):
@@ -72,3 +72,14 @@ class Product:
                 unique_names.append(prod)
 
         return unique_names
+
+    @property
+    def price(self):
+        return self.__price
+
+    @price.setter
+    def price(self, new_price):
+        if new_price <= 0:
+            print("Введена некоректная цена")
+        else:
+            self.__price = new_price
