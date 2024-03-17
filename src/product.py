@@ -46,18 +46,15 @@ class Product:
                 f"наличии: {self.stock_quantity}")
 
     @classmethod
-    def create_product(cls, name, description, price, stock_quantity):
+    def create_product(cls, prod):
         """
         Создает и возвращает новый экземпляр класса Product.
 
-        :param name: Название продукта.
-        :param description: Описание продукта.
-        :param price: Цена продукта.
-        :param stock_quantity: Количество товара на складе.
+        :param prod: словарь с характеристиками товара.
         :return: Экземпляр класса Product.
         """
 
-        return cls(name, description, price, stock_quantity)
+        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"])
 
     @staticmethod
     def check_unique_items(products):
@@ -108,7 +105,7 @@ class Product:
         elif new_price < self.price:
             user_answer = input("Новая цена ниже установленной. Подтвердите операцию [y/N]: ")
 
-            if user_answer == "y" or user_answer == "Y":
+            if user_answer.lower() == "y":
                 self.__price = new_price
         else:
             self.__price = new_price

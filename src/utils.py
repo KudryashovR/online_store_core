@@ -1,8 +1,8 @@
 import json
 import os
 
-from Category import Category
-from Product import Product
+from category import Category
+from product import Product
 
 
 def load_products(filename):
@@ -64,7 +64,6 @@ def category_init(categories):
         products = Product.check_unique_items(products)
 
         for prod in products:
-            product_obj = Product.create_product(prod["name"], prod["description"], prod["price"], prod["quantity"])
-            categories_list[index].add_prod(product_obj)
+            categories_list[index].add_prod(Product.create_product(prod))
 
     return categories_list
