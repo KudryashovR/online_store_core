@@ -1,8 +1,6 @@
 class Product:
     """
-    Класс, представляющий продукт с его основными характеристиками.
-
-    Этот класс используется для создания объектов продуктов с их названием, описанием, ценой и количеством на складе.
+    Класс Продукт представляет сущность товара на складе или в магазине.
     """
 
     name: str
@@ -14,38 +12,103 @@ class Product:
         """
         Атрибуты:
             - name (str): Название продукта.
-            - description (str): Описание продукта, включающее ключевые характеристики или преимущества.
-            - price (float): Цена продукта. Указывается в условных единицах.
-            - stockquantity (int): Количество единиц товара, доступного на складе.
+            - description (str): Описание продукта.
+            - price (float): Цена продукта. Доступно только для чтения через декоратор property.
+            - stock_quantity (int): Количество товара на складе.
 
         Методы:
-            - init(self, name, description, price, stockquantity): Конструктор класса.
-                Инициализирует новый экземпляр продукта с заданными значениями параметров.
+            - __init__(self, name, description, price, stock_quantity): Конструктор класса. Создает экземпляр товара
+                с заданными параметрами.
+            - __repr__(self): Возвращает строковое представление продукта.
+            - create_product(cls, name, description, price, stock_quantity): Классовый метод для создания и возвращения
+                нового экземпляра продукта.
+            - check_unique_items(products): Статический метод для проверки списка продуктов на уникальность исходя
+                из их имени и корректного подсчета общего количества и максимальной цены для одинаковых имён продуктов.
+            - price: Декоратор property для получения цены продукта.
+            - price(new_price): Декоратор setter для установки цены продукта. Позволяет установить новую цену с учетом
+                условий валидации.
 
-            - repr(self): Магический метод для представления объекта в виде строки.
-                Возвращает строку, описывающую продукт, включая его название, описание, цену и количество на складе.
-
-        Пример использования:
-            apple = Product("Apple", "Fresh green apple", 0.5, 100)
-            print(apple)
-
-        Вывод:
-            Название: Apple
-            Описание: Fresh green apple
-            Цена: 0.5
-            Количество в наличии: 100
+        Примечание:
+            Важно учитывать, что при изменении цены продукта через сеттер осуществляется проверка на корректность
+            введенной цены и подтверждение операции в случае понижения цены.
         """
-
         self.name = name
         self.description = description
-        self.price = price
+        self.__price = price
         self.stock_quantity = stock_quantity
 
     def __repr__(self):
         """
-        Магический метод для представления объекта в виде строки. Возвращает строку, описывающую продукт, включая
-        его название, описание, цену и количество на складе.
+        Возвращает строковое представление продукта.
         """
 
         return (f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКоличество в "
                 f"наличии: {self.stock_quantity}")
+
+    @classmethod
+    def create_product(cls, name, description, price, stock_quantity):
+        """
+        Создает и возвращает новый экземпляр класса Product.
+
+        :param name: Название продукта.
+        :param description: Описание продукта.
+        :param price: Цена продукта.
+        :param stock_quantity: Количество товара на складе.
+        :return: Экземпляр класса Product.
+        """
+
+        return cls(name, description, price, stock_quantity)
+
+    @staticmethod
+    def check_unique_items(products):
+        """
+        Проверяет список продуктов на уникальность исходя из их имени.
+
+        :param products: Список словарей продуктов с ключами 'name', 'price', 'quantity'.
+        :return: Список словарей уникальных продуктов с обновленными значениями цены и quantity.
+        """
+
+        unique_names = []
+
+        for prod in products:
+            is_unique = True
+
+            for index, item in enumerate(unique_names):
+                if item["name"] == prod["name"]:
+                    is_unique = False
+                    unique_names[index]["price"] = max(item["price"], prod["price"])
+                    unique_names[index]["quantity"] += item["quantity"]
+                    break
+
+            if is_unique:
+                unique_names.append(prod)
+
+        return unique_names
+
+    @property
+    def price(self):
+        """
+        Возвращает цену продукта.
+
+        :return: Цена продукта.
+        """
+
+        return self.__price
+
+    @price.setter
+    def price(self, new_price):
+        """
+        Устанавливает новую цену продукта с предварительной валидацией.
+
+        :param new_price: Новая цена продукта.
+        """
+
+        if new_price <= 0:
+            print("Введена некоректная цена")
+        elif new_price < self.price:
+            user_answer = input("Новая цена ниже установленной. Подтвердите операцию [y/N]: ")
+
+            if user_answer == "y" or user_answer == "Y":
+                self.__price = new_price
+        else:
+            self.__price = new_price

@@ -1,7 +1,8 @@
 import json
 import os
 
-from src.Category import Category
+from Category import Category
+from Product import Product
 
 
 def load_products(filename):
@@ -41,17 +42,18 @@ def load_products(filename):
 
 def category_init(categories):
     """
-    Инициализирует список категорий с их продуктами на основе переданного списка категорий.
+    Инициализирует и возвращает список категорий с товарами.
 
-    Функция проходит по списку категорий, создает экземпляры класса Category для каждой категории,
-    добавляет в каждую категорию соответствующие продукты и формирует из этих категорий новый список.
+    Данная функция принимает список словарей категорий, каждый из которых содержит информацию о категории
+    и список продуктов, принадлежащих этой категории. Для каждой категории создается объект класса Category,
+    а каждый продукт внутри категории обрабатывается с помощью статического метода check_unique_items класса Product
+    для идентификации уникальных продуктов. Затем для каждого уникального продукта создается объект класса Product,
+    который добавляется в соответствующую категорию.
 
-    Аргументы:
-        - categories (list): список словарей, где каждый словарь представляет собой категорию с полями:
-            'name' (имя категории), 'description' (описание категории) и 'products' (список продуктов).
-
-    Возвращаемое значение:
-        - categories_list (list): список объектов Category с добавленными в каждый объект продуктами.
+    :param categories: Список словарей категорий, где каждый словарь содержит ключи 'name', 'description'
+                       и 'products', а 'products' является списком словарей продуктов, каждый из которых содержит
+                       'name', 'description', 'price' и 'quantity'.
+    :return: Список объектов класса Category, каждый из которых содержит уникальные объекты товаров.
     """
 
     categories_list = []
@@ -59,8 +61,10 @@ def category_init(categories):
     for index, item in enumerate(categories):
         products = item["products"]
         categories_list.append(Category(item["name"], item["description"]))
+        products = Product.check_unique_items(products)
 
         for prod in products:
-            categories_list[index].add_prod(prod)
+            product_obj = Product.create_product(prod["name"], prod["description"], prod["price"], prod["quantity"])
+            categories_list[index].add_prod(product_obj)
 
     return categories_list
