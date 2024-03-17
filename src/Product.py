@@ -81,5 +81,10 @@ class Product:
     def price(self, new_price):
         if new_price <= 0:
             print("Введена некоректная цена")
+        elif new_price < self.price:
+            user_answer = input("Новая цена ниже установленной. Подтвердите операцию [y/N]: ")
+
+            if user_answer == "y" or user_answer == "Y":
+                self.__price = new_price
         else:
             self.__price = new_price
