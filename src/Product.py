@@ -53,3 +53,22 @@ class Product:
     @classmethod
     def create_product(cls, name, description, price, stock_quantity):
         return cls(name, description, price, stock_quantity)
+
+    @staticmethod
+    def check_unique_items(products):
+        unique_names = []
+
+        for prod in products:
+            is_unique = True
+
+            for index, item in enumerate(unique_names):
+                if item["name"] == prod["name"]:
+                    is_unique = False
+                    unique_names[index]["price"] = max(item["price"], prod["price"])
+                    unique_names[index]["quantity"] += item["quantity"]
+                    break
+
+            if is_unique:
+                unique_names.append(prod)
+
+        return unique_names
