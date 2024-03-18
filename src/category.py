@@ -8,7 +8,7 @@ class Category:
 
     name: str
     description: str
-    __prod: list
+    prod: list
     total_categories: int = 0
     total_unique_products: int
 
@@ -102,3 +102,56 @@ class Category:
         """
 
         return self.__prod
+
+
+class CategoryIter:
+    """
+    Итератор для обхода продуктов в категории.
+    """
+
+    category_obj: Category
+    index: int = -1
+
+    def __init__(self, category_obj):
+        """
+        Позволяет итерировать по всем продуктам, принадлежащим к заданной категории,
+        используя итерационные протоколы Python.
+
+        Атрибуты:
+            category_obj (Category): Объект категории, содержащий продукты.
+            index (int): Текущий индекс продукта, который будет возвращен при следующем вызове __next__().
+
+        Параметры:
+            category_obj: Экземпляр класса Category, через который будет происходить итерация.
+
+        Методы:
+            __iter__(): Возвращает самого себя как итератор.
+            __next__(): Возвращает следующий продукт в категории или вызывает StopIteration, если продукты закончились.
+
+        Пример использования:
+            category = Category(prod=[Product1, Product2, Product3])
+            category_iter = CategoryIter(category)
+            for product in category_iter:
+                print(product)
+        """
+
+        self.category_obj = category_obj
+
+    def __iter__(self):
+        """
+        Возвращает самого себя как итератор.
+        """
+
+        return self
+
+    def __next__(self):
+        """
+        Возвращает следующий продукт в категории или вызывает StopIteration, если продукты закончились.
+        """
+
+        if self.index + 1 < len(self.category_obj.prod):
+            self.index += 1
+
+            return self.category_obj.prod[self.index]
+        else:
+            raise StopIteration
