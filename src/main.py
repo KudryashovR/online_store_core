@@ -36,6 +36,19 @@ def main():
 
         print()
 
+    print()
+
+    for item in categories_list:
+        prod_sum = 0
+
+        if len(item.prod) - 1 != 0:
+            for index in range(len(item.prod) - 1):
+                prod_sum += item.prod[index] + item.prod[index + 1]
+        else:
+            prod_sum = item.prod[0].price
+
+        print(f"Категория: {item.name}, товаров на сумму: {prod_sum}")
+
 
 if __name__ == "__main__":
     main()

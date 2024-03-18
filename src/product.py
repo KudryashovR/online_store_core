@@ -21,6 +21,8 @@ class Product:
                 с заданными параметрами.
             - __repr__(self): Возвращает строковое представление продукта для отладки.
             - __str__(self): Возвращает строковое представление продукта для пользователя.
+            - __add__(self, other): Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа
+                Product.
             - create_product(cls, name, description, price, stock_quantity): Классовый метод для создания и возвращения
                 нового экземпляра продукта.
             - check_unique_items(products): Статический метод для проверки списка продуктов на уникальность исходя
@@ -53,6 +55,16 @@ class Product:
         """
 
         return f"{self.name}, {self.price} руб. Остаток: {self.stock_quantity} шт."
+
+    def __add__(self, other):
+        """
+        Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа Product.
+        """
+
+        if isinstance(other, Product):
+            return self.stock_quantity * self.price + other.stock_quantity * other.price
+        else:
+            return 0
 
     @classmethod
     def create_product(cls, prod):
