@@ -19,7 +19,8 @@ class Product:
         Методы:
             - __init__(self, name, description, price, stock_quantity): Конструктор класса. Создает экземпляр товара
                 с заданными параметрами.
-            - __repr__(self): Возвращает строковое представление продукта.
+            - __repr__(self): Возвращает строковое представление продукта для отладки.
+            - __str__(self): Возвращает строковое представление продукта для пользователя.
             - create_product(cls, name, description, price, stock_quantity): Классовый метод для создания и возвращения
                 нового экземпляра продукта.
             - check_unique_items(products): Статический метод для проверки списка продуктов на уникальность исходя
@@ -27,6 +28,8 @@ class Product:
             - price: Декоратор property для получения цены продукта.
             - price(new_price): Декоратор setter для установки цены продукта. Позволяет установить новую цену с учетом
                 условий валидации.
+            - stock_quantity: Декоратор property для получения количествf продукта.
+            - stock_quantity(new_stock_quantity): Декоратор setter для установки количества продукта.
 
         Примечание:
             Важно учитывать, что при изменении цены продукта через сеттер осуществляется проверка на корректность
@@ -35,15 +38,21 @@ class Product:
         self.name = name
         self.description = description
         self.__price = price
-        self.stock_quantity = stock_quantity
+        self.__stock_quantity = stock_quantity
 
     def __repr__(self):
         """
-        Возвращает строковое представление продукта.
+        Возвращает строковое представление продукта для отладки.
         """
 
-        return (f"Название: {self.name}\nОписание: {self.description}\nЦена: {self.price}\nКоличество в "
-                f"наличии: {self.stock_quantity}")
+        return f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.stock_quantity})"
+
+    def __str__(self):
+        """
+        Возвращает строковое представление продукта для пользователя.
+        """
+
+        return f"{self.name}, {self.price} руб. Остаток: {self.stock_quantity} шт."
 
     @classmethod
     def create_product(cls, prod):
@@ -109,3 +118,21 @@ class Product:
                 self.__price = new_price
         else:
             self.__price = new_price
+
+    @property
+    def stock_quantity(self):
+        """
+        Возвращает количество продукта.
+        """
+
+        return self.__stock_quantity
+
+    @stock_quantity.setter
+    def stock_quantity(self, new_stock_quantity):
+        """
+        Устанавливает новое количество продукта.
+
+        :param new_stock_quantity: Новое количество продукта.
+        """
+
+        self.__stock_quantity = new_stock_quantity

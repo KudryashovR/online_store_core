@@ -25,7 +25,9 @@ class Category:
             - __init__(self, name, description, prod=None): Конструктор для создания объекта категории.
                 Принимает название и описание категории, а также необязательный словарь prod для добавления первого
                 продукта.
-            - __repr__(self): Возвращает строковое представление объекта категории.
+            - __repr__(self): Возвращает строковое представление объекта категории для отладки.
+            - __str__(self): Возвращает строковое представление объекта категории для пользователя.
+            - __len__(self): Возвращает общее количество продуктов в категории.
             - add_prod(self, new_product): Добавляет новый продукт в категорию.
             - product (property): Возвращает информацию о всех продуктах в категории в удобочитаемом формате.
             - prod (property): Геттер для доступа к списку продуктов в категории.
@@ -47,12 +49,30 @@ class Category:
 
     def __repr__(self):
         """
-        Возвращает строковое представление объекта категории.
+        Возвращает строковое представление объекта категории для отладки.
         """
 
-        return (f"Название: {self.name}\nОписание: {self.description}\nТовары: {self.__prod}\nОбщее количество "
-                f"категорй: {self.total_categories}\nОбщее количество уникальных "
-                f"продуктов: {self.total_unique_products}")
+        return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.prod})\ntotal_categories: "
+                f"{self.total_categories}\ntotal_unique_products: {self.total_unique_products}")
+
+    def __str__(self):
+        """
+        Возвращает строковое представление объекта категории для пользователя.
+        """
+
+        return f"{self.name}, количество продуктов: {len(self)} шт."
+
+    def __len__(self):
+        """
+        Возвращает общее количество продуктов в категории.
+        """
+
+        stock_quantity_count = 0
+
+        for item in self.prod:
+            stock_quantity_count += item.stock_quantity
+
+        return stock_quantity_count
 
     def add_prod(self, new_product):
         """
@@ -71,7 +91,7 @@ class Category:
         result = ""
 
         for item in self.__prod:
-            result += f"{item.name}, {item.price} руб. Остаток: {item.stock_quantity} шт.\n"
+            result += str(item) + "\n"
 
         return result.rstrip()
 
