@@ -7,9 +7,15 @@ def main():
 
     while True:
         for item in categories_list:
+            print(item)
+
+        print()
+
+        for item in categories_list:
             print(item.product)
 
         print()
+
         change_price_name = input("Введите наименование продукта для изменения цены. Если цену менять не нужно, "
                                   "оставьте поле пустым. ")
 
