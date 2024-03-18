@@ -64,7 +64,7 @@ class Product:
         if isinstance(other, Product):
             return self.stock_quantity * self.price + other.stock_quantity * other.price
         else:
-            return 0
+            raise ValueError("Ошибка типа")
 
     @classmethod
     def create_product(cls, prod):
