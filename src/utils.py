@@ -1,9 +1,9 @@
 import json
 import os
 
-from category import Category
-from category import CategoryIter
-from product import Product
+from src.category import Category
+from src.category import CategoryIter
+from src.product import Product
 
 
 def load_products(filename):
@@ -30,7 +30,7 @@ def load_products(filename):
     Функция требует, чтобы в той же директории, что и программа, присутствовала папка 'data'.
     """
 
-    filepath = os.path.join("data", filename)
+    filepath = os.path.join("src/data", filename)
 
     try:
         with open(filepath) as file:
