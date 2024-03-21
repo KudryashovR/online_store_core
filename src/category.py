@@ -1,4 +1,4 @@
-from product import Product
+from src.product import Product
 
 
 class Category:
@@ -8,7 +8,7 @@ class Category:
 
     name: str
     description: str
-    __prod: list
+    prod: list
     total_categories: int = 0
     total_unique_products: int
 
@@ -25,7 +25,9 @@ class Category:
             - __init__(self, name, description, prod=None): Конструктор для создания объекта категории.
                 Принимает название и описание категории, а также необязательный словарь prod для добавления первого
                 продукта.
-            - __repr__(self): Возвращает строковое представление объекта категории.
+            - __repr__(self): Возвращает строковое представление объекта категории для отладки.
+            - __str__(self): Возвращает строковое представление объекта категории для пользователя.
+            - __len__(self): Возвращает общее количество продуктов в категории.
             - add_prod(self, new_product): Добавляет новый продукт в категорию.
             - product (property): Возвращает информацию о всех продуктах в категории в удобочитаемом формате.
             - prod (property): Геттер для доступа к списку продуктов в категории.
@@ -47,12 +49,30 @@ class Category:
 
     def __repr__(self):
         """
-        Возвращает строковое представление объекта категории.
+        Возвращает строковое представление объекта категории для отладки.
         """
 
-        return (f"Название: {self.name}\nОписание: {self.description}\nТовары: {self.__prod}\nОбщее количество "
-                f"категорй: {self.total_categories}\nОбщее количество уникальных "
-                f"продуктов: {self.total_unique_products}")
+        return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.prod})\ntotal_categories: "
+                f"{self.total_categories}\ntotal_unique_products: {self.total_unique_products}")
+
+    def __str__(self):
+        """
+        Возвращает строковое представление объекта категории для пользователя.
+        """
+
+        return f"{self.name}, количество продуктов: {len(self)} шт."
+
+    def __len__(self):
+        """
+        Возвращает общее количество продуктов в категории.
+        """
+
+        stock_quantity_count = 0
+
+        for item in self.prod:
+            stock_quantity_count += item.stock_quantity
+
+        return stock_quantity_count
 
     def add_prod(self, new_product):
         """
@@ -71,7 +91,7 @@ class Category:
         result = ""
 
         for item in self.__prod:
-            result += f"{item.name}, {item.price} руб. Остаток: {item.stock_quantity} шт.\n"
+            result += str(item) + "\n"
 
         return result.rstrip()
 
@@ -82,3 +102,56 @@ class Category:
         """
 
         return self.__prod
+
+
+class CategoryIter:
+    """
+    Итератор для обхода продуктов в категории.
+    """
+
+    category_obj: Category
+    index: int = -1
+
+    def __init__(self, category_obj):
+        """
+        Позволяет итерировать по всем продуктам, принадлежащим к заданной категории,
+        используя итерационные протоколы Python.
+
+        Атрибуты:
+            category_obj (Category): Объект категории, содержащий продукты.
+            index (int): Текущий индекс продукта, который будет возвращен при следующем вызове __next__().
+
+        Параметры:
+            category_obj: Экземпляр класса Category, через который будет происходить итерация.
+
+        Методы:
+            __iter__(): Возвращает самого себя как итератор.
+            __next__(): Возвращает следующий продукт в категории или вызывает StopIteration, если продукты закончились.
+
+        Пример использования:
+            category = Category(prod=[Product1, Product2, Product3])
+            category_iter = CategoryIter(category)
+            for product in category_iter:
+                print(product)
+        """
+
+        self.category_obj = category_obj
+
+    def __iter__(self):
+        """
+        Возвращает самого себя как итератор.
+        """
+
+        return self
+
+    def __next__(self):
+        """
+        Возвращает следующий продукт в категории или вызывает StopIteration, если продукты закончились.
+        """
+
+        if self.index + 1 < len(self.category_obj.prod):
+            self.index += 1
+
+            return self.category_obj.prod[self.index]
+        else:
+            raise StopIteration

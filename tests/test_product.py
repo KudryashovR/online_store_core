@@ -2,6 +2,7 @@ import pytest
 
 from src.product import Product
 
+
 @pytest.fixture
 def product_test():
     return Product("Samsung Galaxy C23 Ultra", "256GB, Серый цвет, 200MP камера", 180_000.0,
