@@ -4,6 +4,8 @@ import os
 from src.category import Category
 from src.category import CategoryIter
 from src.product import Product
+from src.product import Smartphone
+from src.product import LawnGrass
 
 
 def load_products(filename):
@@ -43,18 +45,24 @@ def load_products(filename):
 
 def category_init(categories):
     """
-    Инициализирует и возвращает список категорий с товарами.
+    Инициализирует и возвращает список категорий, каждая из которых включает в себя уникальные продукты.
 
-    Данная функция принимает список словарей категорий, каждый из которых содержит информацию о категории
-    и список продуктов, принадлежащих этой категории. Для каждой категории создается объект класса Category,
-    а каждый продукт внутри категории обрабатывается с помощью статического метода check_unique_items класса Product
-    для идентификации уникальных продуктов. Затем для каждого уникального продукта создается объект класса Product,
-    который добавляется в соответствующую категорию.
+    Принимает на вход список категорий, где каждая категория представлена словарем с ключами 'name' (название
+    категории), 'description' (описание категории) и 'products' (список продуктов, принадлежащих к категории). Каждый
+    продукт в списке также представляется словарем с необходимыми атрибутами для создания соответствующего объекта
+    продукта (например, 'name', 'description', 'price', 'quantity' и дополнительные атрибуты в зависимости от типа
+    продукта).
 
-    :param categories: Список словарей категорий, где каждый словарь содержит ключи 'name', 'description'
-                       и 'products', а 'products' является списком словарей продуктов, каждый из которых содержит
-                       'name', 'description', 'price' и 'quantity'.
-    :return: Список объектов класса Category, каждый из которых содержит уникальные объекты товаров.
+    Для каждой категории создается объект класса Category. Продукты в каждой категории проверяются на уникальность
+    с помощью статического метода check_unique_items класса Product. Для каждого уникального продукта определяется его
+    тип и на основании этого создается соответствующий объект (например, Smartphone или LawnGrass) с помощью
+    классового метода create_product. Созданные объекты продуктов добавляются в свои категории.
+
+    :param categories: Список словарей, представляющих категории. Каждый словарь содержит ключи 'name' и 'description'
+                       для категории и 'products' — список словарей продуктов. Продукты имеют атрибуты, необходимые
+                       для их идентификации и создания объектов соответствующих классов.
+    :return: Список объектов класса Category, в котором каждый объект содержит список уникальных продуктов,
+             соответствующих данной категории и добавленных с учетом их спецификации (например, тип продукта).
     """
 
     categories_list = []
@@ -65,7 +73,15 @@ def category_init(categories):
         products = Product.check_unique_items(products)
 
         for prod in products:
-            categories_list[index].add_prod(Product.create_product(prod))
+            match item["name"]:
+                case "Смартфоны":
+                    categories_list[index].add_prod(Smartphone.create_product(prod))
+                    break
+                case "Трава газонная":
+                    categories_list[index].add_prod(LawnGrass.create_product(prod))
+                    break
+                case _:
+                    categories_list[index].add_prod(Product.create_product(prod))
 
     return categories_list
 

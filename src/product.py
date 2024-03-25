@@ -7,14 +7,16 @@ class Product:
     description: str
     price: float
     stock_quantity: int
+    color: str
 
-    def __init__(self, name, description, price, stock_quantity):
+    def __init__(self, name, description, price, stock_quantity, color=None):
         """
         Атрибуты:
             - name (str): Название продукта.
             - description (str): Описание продукта.
             - price (float): Цена продукта. Доступно только для чтения через декоратор property.
             - stock_quantity (int): Количество товара на складе.
+            - color (str): Цвет товара (необязательный атрибут).
 
         Методы:
             - __init__(self, name, description, price, stock_quantity): Конструктор класса. Создает экземпляр товара
@@ -41,13 +43,15 @@ class Product:
         self.description = description
         self.__price = price
         self.__stock_quantity = stock_quantity
+        self.color = color
 
     def __repr__(self):
         """
         Возвращает строковое представление продукта для отладки.
         """
 
-        return f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.stock_quantity})"
+        return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.stock_quantity}, "
+                f"{self.color})")
 
     def __str__(self):
         """
@@ -148,3 +152,138 @@ class Product:
         """
 
         self.__stock_quantity = new_stock_quantity
+
+
+class Smartphone(Product):
+    """
+    Класс, представляющий смартфон как продукт.
+
+    Этот класс наследуется от класса Product и добавляет специфичные для смартфона характеристики,
+    такие как эффективность, название модели и внутренняя память.
+    """
+
+    efficiency: float
+    model_name: str
+    internal_memory: float
+
+    def __init__(self, name, description, price, stock_quantity, efficiency, model_name, internal_memory, color):
+        """
+        Атрибуты:
+            efficiency (float): Эффективность смартфона, возможно, это может быть мера производительности
+                или энергоэффективности.
+            model_name (str): Название модели смартфона.
+            internal_memory (float): Размер внутренней памяти смартфона в гигабайтах.
+
+        Параметры конструктора (__init__):
+            name (str): Название продукта.
+            description (str): Описание продукта.
+            price (float): Цена продукта.
+            stock_quantity (int): Количество продукта на складе.
+            efficiency (float): Эффективность смартфона.
+            model_name (str): Название модели смартфона.
+            internal_memory (float): Внутренняя память смартфона.
+            color (str): Цвет смартфона.
+
+        Методы:
+            __repr__: Возвращает строковое представление объекта класса Smartphone.
+
+        Классовые методы:
+            create_product(cls, prod): Создает и возвращает объект класса Smartphone из полученного словаря параметров prod.
+        """
+
+        super().__init__(name, description, price, stock_quantity, color)
+        self.efficiency = efficiency
+        self.model_name = model_name
+        self.internal_memory = internal_memory
+
+    def __repr__(self):
+        """
+        Возвращает строковое представление объекта класса Smartphone.
+
+        Возвращаемое значение:
+            str: Строковое представление объекта.
+        """
+
+        return (f"Parent: {super().__class__.__name__}\n{self.__class__.__name__}({self.name}, {self.description}, "
+                f"{self.price}, {self.stock_quantity}, {self.efficiency}, {self.model_name}, {self.internal_memory}, "
+                f"{self.color})")
+
+    @classmethod
+    def create_product(cls, prod):
+        """
+        Создает и возвращает объект класса Smartphone из полученного словаря параметров prod.
+
+        Параметры:
+            prod (dict): Словарь параметров с ключами, соответствующими атрибутам класса Smartphone.
+
+        Возвращаемое значение:
+            Smartphone: Объект класса Smartphone.
+        """
+
+        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"], prod["efficiency"],
+                   prod["model_name"], prod["internal_memory"], prod["color"])
+
+
+class LawnGrass(Product):
+    """
+    Класс, представляющий семена газонной травы как продукт.
+
+    Этот класс наследуется от базового класса Product и добавляет уникальные характеристики газонной травы,
+    такие как страна происхождения и период прорастания.
+    """
+
+    origin_country: str
+    germination_period: int
+
+    def __init__(self, name, description, price, stock_quantity, origin_country, germination_period, color):
+        """
+        Атрибуты:
+            origin_country (str): Страна происхождения семян газонной травы.
+            germination_period (int): Время, необходимое для прорастания семян газонной травы (в днях).
+
+        Параметры конструктора (__init__):
+            name (str): Название продукта.
+            description (str): Описание продукта.
+            price (float): Цена продукта.
+            stock_quantity (int): Количество продукта на складе.
+            origin_country (str): Страна происхождения семян газонной травы.
+            germination_period (int): Период прорастания семян газонной травы.
+            color (str): Цвет упаковки или семян.
+
+        Методы:
+            __repr__: Возвращает строковое представление объекта класса LawnGrass.
+
+        Классовые методы:
+            create_product(cls, prod): Создает и возвращает объект класса LawnGrass из полученного словаря параметров prod.
+        """
+
+        super().__init__(name, description, price, stock_quantity, color)
+        self.origin_country = origin_country
+        self.germination_period = germination_period
+
+    def __repr__(self):
+        """
+        Возвращает строковое представление объекта класса LawnGrass.
+
+        Возвращаемое значение:
+            str: Строковое представление объекта.
+        """
+
+        return (f"Parent: {super().__class__.__name__}\n{self.__class__.__name__}({self.name}, {self.description}, "
+                f"{self.price}, {self.stock_quantity}, {self.origin_country}, {self.germination_period}, "
+                f"{self.color})")
+
+    @classmethod
+    def create_product(cls, prod):
+        """
+        Создает и возвращает объект класса LawnGrass из полученного словаря параметров prod.
+
+        Параметры:
+            prod (dict): Словарь параметров с ключами, соответствующими атрибутам класса LawnGrass.
+
+        Возвращаемое значение:
+            LawnGrass: Объект класса LawnGrass.
+        """
+
+        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"], prod["origin_country"],
+                   prod["germination_period"], prod["color"])
