@@ -79,8 +79,15 @@ class Category:
         Добавляет новый продукт в категорию.
         """
 
-        self.__prod.append(new_product)
-        self.total_unique_products += 1
+        if self.prod:
+            if isinstance(new_product, type(self.prod[0])):
+                self.__prod.append(new_product)
+                self.total_unique_products += 1
+            else:
+                raise ValueError("Тип добавляемого объекта не соответствует категории")
+        else:
+            self.__prod.append(new_product)
+            self.total_unique_products += 1
 
     @property
     def product(self):
