@@ -100,7 +100,7 @@ class Product:
                 if item["name"] == prod["name"]:
                     is_unique = False
                     unique_names[index]["price"] = max(item["price"], prod["price"])
-                    unique_names[index]["quantity"] += item["quantity"]
+                    unique_names[index]["quantity"] += prod["quantity"]
                     break
 
             if is_unique:
