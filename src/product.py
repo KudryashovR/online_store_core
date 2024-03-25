@@ -24,14 +24,15 @@ class Product:
             - __repr__(self): Возвращает строковое представление продукта для отладки.
             - __str__(self): Возвращает строковое представление продукта для пользователя.
             - __add__(self, other): Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа
-                Product.
+                                    Product.
             - create_product(cls, name, description, price, stock_quantity): Классовый метод для создания и возвращения
-                нового экземпляра продукта.
+                                                                             нового экземпляра продукта.
             - check_unique_items(products): Статический метод для проверки списка продуктов на уникальность исходя
-                из их имени и корректного подсчета общего количества и максимальной цены для одинаковых имён продуктов.
+                                            из их имени и корректного подсчета общего количества и максимальной цены
+                                            для одинаковых имён продуктов.
             - price: Декоратор property для получения цены продукта.
             - price(new_price): Декоратор setter для установки цены продукта. Позволяет установить новую цену с учетом
-                условий валидации.
+                                условий валидации.
             - stock_quantity: Декоратор property для получения количествf продукта.
             - stock_quantity(new_stock_quantity): Декоратор setter для установки количества продукта.
 
@@ -65,10 +66,10 @@ class Product:
         Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа Product.
         """
 
-        if isinstance(other, Product):
+        if isinstance(other, type(self)):
             return self.stock_quantity * self.price + other.stock_quantity * other.price
         else:
-            raise ValueError("Ошибка типа")
+            raise ValueError("Типы складываемых объектов не совпадают")
 
     @classmethod
     def create_product(cls, prod):
@@ -170,7 +171,7 @@ class Smartphone(Product):
         """
         Атрибуты:
             efficiency (float): Эффективность смартфона, возможно, это может быть мера производительности
-                или энергоэффективности.
+                                или энергоэффективности.
             model_name (str): Название модели смартфона.
             internal_memory (float): Размер внутренней памяти смартфона в гигабайтах.
 
@@ -188,7 +189,8 @@ class Smartphone(Product):
             __repr__: Возвращает строковое представление объекта класса Smartphone.
 
         Классовые методы:
-            create_product(cls, prod): Создает и возвращает объект класса Smartphone из полученного словаря параметров prod.
+            create_product(cls, prod): Создает и возвращает объект класса Smartphone из полученного словаря параметров
+                                       prod.
         """
 
         super().__init__(name, description, price, stock_quantity, color)
@@ -254,7 +256,8 @@ class LawnGrass(Product):
             __repr__: Возвращает строковое представление объекта класса LawnGrass.
 
         Классовые методы:
-            create_product(cls, prod): Создает и возвращает объект класса LawnGrass из полученного словаря параметров prod.
+            create_product(cls, prod): Создает и возвращает объект класса LawnGrass из полученного словаря параметров
+                                       prod.
         """
 
         super().__init__(name, description, price, stock_quantity, color)
