@@ -1,7 +1,8 @@
 import pytest
-from unittest.mock import Mock
+from unittest.mock import Mock, create_autospec
 
 from src.category import Category
+from src.product import Product, Smartphone, LawnGrass
 
 
 @pytest.fixture
@@ -21,8 +22,8 @@ def filled_category():
     product_mock = Mock(name='Product', description='Test product', price=10.99, stock_quantity=100)
 
     return Category('Filled Category', 'This category has one product',
-                    prod={"name": product_mock.name, "description": product_mock.description,
-                          "price": product_mock.price, "quantity": product_mock.stock_quantity})
+                    product={"name": product_mock.name, "description": product_mock.description,
+                             "price": product_mock.price, "quantity": product_mock.stock_quantity})
 
 
 @pytest.fixture
@@ -47,11 +48,28 @@ def test_category_constructor(empty_category):
 
 
 def test_add_prod(empty_category):
-    product_mock = Mock(name='Product', description='Test product', price=10.99, stock_quantity=100)
+    product_mock = create_autospec(Product, instance=True)
     empty_category.add_prod(product_mock)
 
     assert len(empty_category.prod) == 1
-    assert empty_category.prod[0] == product_mock
+    assert empty_category.prod[-1] == product_mock
+
+    product_mock = create_autospec(Smartphone, instance=True)
+    empty_category.add_prod(product_mock)
+
+    assert len(empty_category.prod) == 2
+    assert empty_category.prod[-1] == product_mock
+
+    product_mock = create_autospec(LawnGrass, instance=True)
+    empty_category.add_prod(product_mock)
+
+    assert len(empty_category.prod) == 3
+    assert empty_category.prod[-1] == product_mock
+
+    wrong_type = create_autospec(Category, instance=True)
+
+    with pytest.raises(ValueError):
+        empty_category.add_prod(wrong_type)
 
 
 def test_str(empty_category):
@@ -80,29 +98,6 @@ def test_repr(empty_category):
                      'total_unique_products: 0')
 
     assert repr(empty_category) == expected_repr
-
-
-def test_add_prod_success(category, sample_product):
-    category.add_prod(sample_product)
-
-    assert len(category.prod) == 1
-    assert category.total_unique_products == 1
-    assert category.prod[0] == sample_product
-
-
-def test_add_prod_different_type_raises_error(category, sample_product, another_sample_product):
-    category.add_prod(sample_product)
-
-    with pytest.raises(ValueError):
-        category.add_prod(another_sample_product)
-
-
-def test_add_multiple_products(category, sample_product):
-    for _ in range(5):
-        category.add_prod(sample_product)
-
-    assert len(category.prod) == 5
-    assert category.total_unique_products == 5
 
 
 def test_product(manual_category):

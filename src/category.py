@@ -1,4 +1,7 @@
-from src.product import Product
+from typing import Union
+
+
+from src.product import Product, Smartphone, LawnGrass
 
 
 class Category:
@@ -12,7 +15,7 @@ class Category:
     total_categories: int = 0
     total_unique_products: int
 
-    def __init__(self, name, description, prod=None):
+    def __init__(self, name: str, description: str, product: dict = None) -> None:
         """
         Атрибуты:
             - name (str): Название категории.
@@ -22,8 +25,9 @@ class Category:
             - total_unique_products (int): Количество уникальных продуктов в категории.
 
             Методы:
-            - __init__(self, name, description, prod=None): Конструктор для создания объекта категории.
-                Принимает название и описание категории, а также необязательный словарь prod для добавления первого
+            - __init__(self, name, description, product=None): Конструктор для создания объекта категории.
+                                                               Принимает название и описание категории, а также
+                                                               необязательный словарь prod для добавления первого
                 продукта.
             - __repr__(self): Возвращает строковое представление объекта категории для отладки.
             - __str__(self): Возвращает строковое представление объекта категории для пользователя.
@@ -41,13 +45,13 @@ class Category:
         self.description = description
         self.__prod = []
 
-        if prod:
-            self.__prod.append(Product(prod["name"], prod["description"], prod["price"], prod["quantity"]))
+        if product:
+            self.__prod.append(Product(product["name"], product["description"], product["price"], product["quantity"]))
 
         self.total_categories += 1
         self.total_unique_products = len(self.__prod)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Возвращает строковое представление объекта категории для отладки.
         """
@@ -55,14 +59,14 @@ class Category:
         return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.prod})\ntotal_categories: "
                 f"{self.total_categories}\ntotal_unique_products: {self.total_unique_products}")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Возвращает строковое представление объекта категории для пользователя.
         """
 
         return f"{self.name}, количество продуктов: {len(self)} шт."
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Возвращает общее количество продуктов в категории.
         """
@@ -74,23 +78,19 @@ class Category:
 
         return stock_quantity_count
 
-    def add_prod(self, new_product):
+    def add_prod(self, new_product: Union[Product, Smartphone, LawnGrass]) -> None:
         """
         Добавляет новый продукт в категорию.
         """
 
-        if self.prod:
-            if isinstance(new_product, type(self.prod[0])):
-                self.__prod.append(new_product)
-                self.total_unique_products += 1
-            else:
-                raise ValueError("Тип добавляемого объекта не соответствует категории")
-        else:
+        if isinstance(new_product, Product):
             self.__prod.append(new_product)
             self.total_unique_products += 1
+        else:
+            raise ValueError("Тип добавляемого объекта не соответствует категории")
 
     @property
-    def product(self):
+    def product(self) -> str:
         """
         Возвращает информацию о всех продуктах в категории в удобочитаемом формате.
         """
@@ -103,7 +103,7 @@ class Category:
         return result.rstrip()
 
     @property
-    def prod(self):
+    def prod(self) -> list:
         """
         Геттер для доступа к списку продуктов в категории.
         """
@@ -119,7 +119,7 @@ class CategoryIter:
     category_obj: Category
     index: int = -1
 
-    def __init__(self, category_obj):
+    def __init__(self, category_obj: Category) -> None:
         """
         Позволяет итерировать по всем продуктам, принадлежащим к заданной категории,
         используя итерационные протоколы Python.
@@ -144,14 +144,14 @@ class CategoryIter:
 
         self.category_obj = category_obj
 
-    def __iter__(self):
+    def __iter__(self) -> 'CategoryIter':
         """
         Возвращает самого себя как итератор.
         """
 
         return self
 
-    def __next__(self):
+    def __next__(self) -> Union[Product, Smartphone, LawnGrass]:
         """
         Возвращает следующий продукт в категории или вызывает StopIteration, если продукты закончились.
         """
