@@ -4,6 +4,22 @@ from unittest.mock import patch
 from src.product import Product, Smartphone, LawnGrass
 
 
+@pytest.fixture
+def prod1():
+    return Product("Tea Kettle", "Stainless steel tea kettle", 120.50, 10)
+
+
+@pytest.fixture
+def prod2():
+    return Product("Coffee Maker", "Drip coffee maker", 99.99, 5)
+
+
+@pytest.fixture
+def non_product():
+    return Smartphone("Coffee Maker", "Drip coffee maker", 99.99, 5, "grey",
+                      125, "Maker", 125)
+
+
 def test_product_initialization():
     product = Product("Ноутбук", "Высокопроизводительный ноутбук", 100000, 50, "Черный")
 
@@ -71,13 +87,14 @@ def test_change_price_with_input():
 
 
 def test_smartphone_initialization():
-    smartphone = Smartphone("Galaxy S21", "Высокопроизводительный смартфон", 80000, 25, "Высокая", "S21", 128, "Черный")
+    smartphone = Smartphone("Galaxy S21", "Высокопроизводительный смартфон", 80000,
+                            25, "Черный", 125, "S21", 128)
 
     assert smartphone.name == "Galaxy S21"
     assert smartphone.description == "Высокопроизводительный смартфон"
     assert smartphone.price == 80000
     assert smartphone.stock_quantity == 25
-    assert smartphone.efficiency == "Высокая"
+    assert smartphone.efficiency == 125
     assert smartphone.model_name == "S21"
     assert smartphone.internal_memory == 128
     assert smartphone.color == "Черный"
@@ -107,14 +124,15 @@ def test_smartphone_create_product():
 
 
 def test_lawn_grass_initialization():
-    lawn_grass = LawnGrass("Зеленый ковер", "Газонная трава для сада", 5000, 40, "Нидерланды", "14 дней", "Зеленый")
+    lawn_grass = LawnGrass("Зеленый ковер", "Газонная трава для сада", 5000, 40,
+                           "Зеленый", "Нидерланды", 14)
 
     assert lawn_grass.name == "Зеленый ковер"
     assert lawn_grass.description == "Газонная трава для сада"
     assert lawn_grass.price == 5000
     assert lawn_grass.stock_quantity == 40
     assert lawn_grass.origin_country == "Нидерланды"
-    assert lawn_grass.germination_period == "14 дней"
+    assert lawn_grass.germination_period == 14
     assert lawn_grass.color == "Зеленый"
 
 
@@ -137,3 +155,24 @@ def test_lawn_grass_create_product():
     assert lawn_grass.origin_country == "Великобритания"
     assert lawn_grass.germination_period == "10 дней"
     assert lawn_grass.color == "Ярко-зеленый"
+
+
+def test_product_addition_same_type(prod1, prod2):
+    total_value = prod1 + prod2
+    expected_value = (prod1.stock_quantity * prod1.price + prod2.stock_quantity * prod2.price)
+
+    assert total_value == expected_value
+
+
+def test_product_addition_with_different_type(prod1, non_product):
+    with pytest.raises(ValueError) as e:
+        _ = prod1 + non_product
+
+    assert "Типы складываемых объектов не совпадают" in str(e.value)
+
+
+def test_product_addition_with_itself(prod1):
+    total_value = prod1 + prod1
+    expected_value = 2 * (prod1.stock_quantity * prod1.price)
+
+    assert total_value == expected_value

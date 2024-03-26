@@ -1,3 +1,6 @@
+from typing import Union
+
+
 class Product:
     """
     Класс Продукт представляет сущность товара на складе или в магазине.
@@ -9,7 +12,7 @@ class Product:
     stock_quantity: int
     color: str
 
-    def __init__(self, name, description, price, stock_quantity, color=None):
+    def __init__(self, name: str, description: str, price: float, stock_quantity: int, color: str = None) -> None:
         """
         Атрибуты:
             - name (str): Название продукта.
@@ -20,7 +23,7 @@ class Product:
 
         Методы:
             - __init__(self, name, description, price, stock_quantity): Конструктор класса. Создает экземпляр товара
-                с заданными параметрами.
+                                                                        с заданными параметрами.
             - __repr__(self): Возвращает строковое представление продукта для отладки.
             - __str__(self): Возвращает строковое представление продукта для пользователя.
             - __add__(self, other): Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа
@@ -40,13 +43,14 @@ class Product:
             Важно учитывать, что при изменении цены продукта через сеттер осуществляется проверка на корректность
             введенной цены и подтверждение операции в случае понижения цены.
         """
+
         self.name = name
         self.description = description
         self.__price = price
         self.__stock_quantity = stock_quantity
         self.color = color
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Возвращает строковое представление продукта для отладки.
         """
@@ -54,25 +58,25 @@ class Product:
         return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.stock_quantity}, "
                 f"{self.color})")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Возвращает строковое представление продукта для пользователя.
         """
 
         return f"{self.name}, {self.price} руб. Остаток: {self.stock_quantity} шт."
 
-    def __add__(self, other):
+    def __add__(self, other: Union['Product', 'Smartphone', 'LawnGrass']) -> float:
         """
         Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа Product.
         """
 
-        if isinstance(other, type(self)):
+        if type(other) is type(self):
             return self.stock_quantity * self.price + other.stock_quantity * other.price
         else:
             raise ValueError("Типы складываемых объектов не совпадают")
 
     @classmethod
-    def create_product(cls, prod):
+    def create_product(cls, prod: dict) -> 'Product':
         """
         Создает и возвращает новый экземпляр класса Product.
 
@@ -83,7 +87,7 @@ class Product:
         return cls(prod["name"], prod["description"], prod["price"], prod["quantity"])
 
     @staticmethod
-    def check_unique_items(products):
+    def check_unique_items(products: list) -> list:
         """
         Проверяет список продуктов на уникальность исходя из их имени.
 
@@ -109,7 +113,7 @@ class Product:
         return unique_names
 
     @property
-    def price(self):
+    def price(self) -> float:
         """
         Возвращает цену продукта.
 
@@ -119,7 +123,7 @@ class Product:
         return self.__price
 
     @price.setter
-    def price(self, new_price):
+    def price(self, new_price: float) -> None:
         """
         Устанавливает новую цену продукта с предварительной валидацией.
 
@@ -137,7 +141,7 @@ class Product:
             self.__price = new_price
 
     @property
-    def stock_quantity(self):
+    def stock_quantity(self) -> int:
         """
         Возвращает количество продукта.
         """
@@ -145,7 +149,7 @@ class Product:
         return self.__stock_quantity
 
     @stock_quantity.setter
-    def stock_quantity(self, new_stock_quantity):
+    def stock_quantity(self, new_stock_quantity: int) -> None:
         """
         Устанавливает новое количество продукта.
 
@@ -167,7 +171,8 @@ class Smartphone(Product):
     model_name: str
     internal_memory: float
 
-    def __init__(self, name, description, price, stock_quantity, efficiency, model_name, internal_memory, color):
+    def __init__(self, name: str, description: str, price: float, stock_quantity: int, color: str,
+                 efficiency: float, model_name: str, internal_memory: float) -> None:
         """
         Атрибуты:
             efficiency (float): Эффективность смартфона, возможно, это может быть мера производительности
@@ -198,7 +203,7 @@ class Smartphone(Product):
         self.model_name = model_name
         self.internal_memory = internal_memory
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Возвращает строковое представление объекта класса Smartphone.
 
@@ -211,7 +216,7 @@ class Smartphone(Product):
                 f"{self.color})")
 
     @classmethod
-    def create_product(cls, prod):
+    def create_product(cls, prod: dict) -> 'Smartphone':
         """
         Создает и возвращает объект класса Smartphone из полученного словаря параметров prod.
 
@@ -222,8 +227,8 @@ class Smartphone(Product):
             Smartphone: Объект класса Smartphone.
         """
 
-        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"], prod["efficiency"],
-                   prod["model_name"], prod["internal_memory"], prod["color"])
+        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"], prod["color"],
+                   prod["efficiency"], prod["model_name"], prod["internal_memory"])
 
 
 class LawnGrass(Product):
@@ -237,7 +242,8 @@ class LawnGrass(Product):
     origin_country: str
     germination_period: int
 
-    def __init__(self, name, description, price, stock_quantity, origin_country, germination_period, color):
+    def __init__(self, name: str, description: str, price: float, stock_quantity: int, color: str,
+                 origin_country: str, germination_period: int) -> None:
         """
         Атрибуты:
             origin_country (str): Страна происхождения семян газонной травы.
@@ -264,7 +270,7 @@ class LawnGrass(Product):
         self.origin_country = origin_country
         self.germination_period = germination_period
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Возвращает строковое представление объекта класса LawnGrass.
 
@@ -277,7 +283,7 @@ class LawnGrass(Product):
                 f"{self.color})")
 
     @classmethod
-    def create_product(cls, prod):
+    def create_product(cls, prod: dict) -> 'LawnGrass':
         """
         Создает и возвращает объект класса LawnGrass из полученного словаря параметров prod.
 
@@ -288,5 +294,5 @@ class LawnGrass(Product):
             LawnGrass: Объект класса LawnGrass.
         """
 
-        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"], prod["origin_country"],
-                   prod["germination_period"], prod["color"])
+        return cls(prod["name"], prod["description"], prod["price"], prod["quantity"], prod["color"],
+                   prod["origin_country"], prod["germination_period"])

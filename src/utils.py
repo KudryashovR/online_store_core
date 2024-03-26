@@ -1,14 +1,11 @@
 import json
 import os
 
-from src.category import Category
-from src.category import CategoryIter
-from src.product import Product
-from src.product import Smartphone
-from src.product import LawnGrass
+from src.category import Category, CategoryIter
+from src.product import Product, Smartphone, LawnGrass
 
 
-def load_products(filename):
+def load_products(filename: str) -> dict:
     """
     Загружает список продуктов из JSON-файла по указанному имени файла.
 
@@ -43,7 +40,7 @@ def load_products(filename):
         raise original_error
 
 
-def category_init(categories):
+def category_init(categories: dict) -> list:
     """
     Инициализирует и возвращает список категорий, каждая из которых включает в себя уникальные продукты.
 
@@ -76,17 +73,15 @@ def category_init(categories):
             match item["name"]:
                 case "Смартфоны":
                     categories_list[index].add_prod(Smartphone.create_product(prod))
-                    break
                 case "Трава газонная":
                     categories_list[index].add_prod(LawnGrass.create_product(prod))
-                    break
                 case _:
                     categories_list[index].add_prod(Product.create_product(prod))
 
     return categories_list
 
 
-def print_statistics(categories_list):
+def print_statistics(categories_list: list) -> None:
     """
     Печатает статистику по каждой категории и выводит сумму стоимости товаров в каждой категории.
 
@@ -134,7 +129,7 @@ def print_statistics(categories_list):
         print()
 
 
-def change_price(categories_list, change_price_name):
+def change_price(categories_list: list, change_price_name: str) -> None:
     """
     Изменяет цену указанного товара в списках категорий.
 
