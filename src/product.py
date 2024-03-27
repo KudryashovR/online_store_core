@@ -1,7 +1,41 @@
 from typing import Union
+from abc import ABC, abstractmethod
 
 
-class Product:
+class AbstractProduct(ABC):
+
+    @classmethod
+    @abstractmethod
+    def create_product(cls, prod: dict) -> 'AbstractProduct':
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def check_unique_items(products: list) -> list:
+        pass
+
+    @property
+    @abstractmethod
+    def price(self) -> float:
+        pass
+
+    @price.setter
+    @abstractmethod
+    def price(self, new_price: float) -> None:
+        pass
+
+    @property
+    @abstractmethod
+    def stock_quantity(self) -> int:
+        pass
+
+    @stock_quantity.setter
+    @abstractmethod
+    def stock_quantity(self, new_stock_quantity: int) -> None:
+        pass
+
+
+class Product(AbstractProduct):
     """
     Класс Продукт представляет сущность товара на складе или в магазине.
     """
