@@ -3,6 +3,7 @@ import os
 
 from src.category import Category, CategoryIter
 from src.product import Product, Smartphone, LawnGrass
+from src.order import Order
 
 
 def load_products(filename: str) -> dict:
@@ -173,3 +174,26 @@ def change_price(categories_list: list, change_price_name: str) -> None:
         print("Указанный товар не найден")
 
     print()
+
+
+def print_operations() -> str:
+    print("\033[34m{}".format("Операции:"))
+    print("1. Изменение цены продукта")
+    print("2. Подготовка заказа для покупки товара")
+
+    mode = input("\033[34m{}\033[0m".format("Введите номер операции или оставьте поле пустым для выхода "
+                                            "из программы: "))
+
+    return mode
+
+
+def get_order(categories_list: list, buying_product_name: str) -> None:
+    buying_product_quantity = int(input("\033[34m{}\033[0m".format("Введите количество покупаемого "
+                                                                   "товара: ")))
+
+    for item in categories_list:
+        for prod in CategoryIter(item):
+            if prod.name == buying_product_name:
+                print()
+                print("\033[31m{}\033[0m".format(Order(prod, buying_product_quantity)))
+                print()

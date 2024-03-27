@@ -4,92 +4,57 @@ from abc import ABC, abstractmethod
 
 class AbstractProduct(ABC):
     """
-    Базовый абстрактный класс.
+    Абстрактный класс продукта, определяющий базовый интерфейс для работы с товарами.
 
-    Этот класс представляет интерфейс для определения параметров продуктов.
+    Класс предусматривает описание товара и предоставляет абстрактные методы и свойства, необходимые для управления
+    его характеристиками, такими как цена и количество на складе. Реализация данных методов и свойств должна быть
+    предусмотрена в конкретных дочерних классах.
 
-    Наследники должны реализовать следующие методы:
-        - create_product(cls, prod): Классовый метод должен создавать и возвращать новый экземпляр продукта.
-        - check_unique_items(products): Статический метод должен проверять список продуктов на уникальность.
-        - price(): Геттер атрибута price.
-        - price(new_price): Сеттер атрибута price.
-        - stock_quantity(): Геттер атрибута stock_quantity.
-        - stock_quantity(new_stock_quantity): Сеттер атрибута stock_quantity.
+    Методы:
+        - __str__(self): Должен возвращать строковое представление продукта.
+        - __add__(self, other): Определяет логику сложения двух продуктов, возвращая их общую стоимость. Может быть
+                                использован, например, для подсчета суммы стоимости товаров в корзине.
+        - check_unique_items(products): Статический метод, предназначенный для проверки списка продуктов
+                                        на уникальность. Возвращает список уникальных товаров.
 
-    Атрибуты:
-        - name (str): Название продукта.
-        - description (str): Описание продукта.
-        - price (float): Цена продукта.
-        - stock_quantity (int): Количество товара на складе.
-        - color (str): Цвет товара (необязательный атрибут).
+    Свойства:
+        - price (float): Свойство для получения и установки цены продукта. Реализация геттера и сеттера требуется
+                         в дочерних классах.
+        - stock_quantity (int): Свойство для получения и установки количества продукта на складе. Требуется реализация
+                                геттера и сеттера в дочерних классах.
     """
 
-    @classmethod
     @abstractmethod
-    def create_product(cls, prod: dict) -> 'AbstractProduct':
-        """
-        Классовый метод должен создавать и возвращать новый экземпляр продукта.
+    def __str__(self) -> str:
+        pass
 
-        :param prod: cловарь с характеристиками товара.
-        :return: cловарь с характеристиками товара.
-        """
-
+    @abstractmethod
+    def __add__(self, other: 'AbstractProduct') -> float:
         pass
 
     @staticmethod
     @abstractmethod
     def check_unique_items(products: list) -> list:
-        """
-        Статический метод должен проверять список продуктов на уникальность.
-
-        :param products: Список словарей продуктов.
-        :return: Список словарей уникальных продуктов.
-        """
-
         pass
 
     @property
     @abstractmethod
     def price(self) -> float:
-        """
-        Геттер атрибута price.
-
-        :return: Цена продукта.
-        """
-
         pass
 
     @price.setter
     @abstractmethod
     def price(self, new_price: float) -> None:
-        """
-        Сеттер атрибута price.
-
-        :param new_price: Новая цена продукта.
-        """
-
         pass
 
     @property
     @abstractmethod
     def stock_quantity(self) -> int:
-        """
-        Геттер атрибута stock_quantity.
-
-        :return: Количество товара на складе.
-        """
-
         pass
 
     @stock_quantity.setter
     @abstractmethod
     def stock_quantity(self, new_stock_quantity: int) -> None:
-        """
-        Сеттер атрибута stock_quantity.
-
-        :param new_stock_quantity: Новое количество продукта.
-        """
-
         pass
 
 
@@ -119,7 +84,7 @@ class MixinCreateLog:
             obj = MyObject()
         """
 
-        print(self.create_log_message(repr(self)))
+        print("\033[32m{}\033[0m".format(self.create_log_message(repr(self))))
 
     @staticmethod
     def create_log_message(object_representation: str) -> str:
