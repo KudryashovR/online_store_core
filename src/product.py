@@ -1,7 +1,110 @@
 from typing import Union
+from abc import ABC, abstractmethod
 
 
-class Product:
+class AbstractProduct(ABC):
+    """
+    Абстрактный класс продукта, определяющий базовый интерфейс для работы с товарами.
+
+    Класс предусматривает описание товара и предоставляет абстрактные методы и свойства, необходимые для управления
+    его характеристиками, такими как цена и количество на складе. Реализация данных методов и свойств должна быть
+    предусмотрена в конкретных дочерних классах.
+
+    Методы:
+        - __str__(self): Должен возвращать строковое представление продукта.
+        - __add__(self, other): Определяет логику сложения двух продуктов, возвращая их общую стоимость. Может быть
+                                использован, например, для подсчета суммы стоимости товаров в корзине.
+        - check_unique_items(products): Статический метод, предназначенный для проверки списка продуктов
+                                        на уникальность. Возвращает список уникальных товаров.
+
+    Свойства:
+        - price (float): Свойство для получения и установки цены продукта. Реализация геттера и сеттера требуется
+                         в дочерних классах.
+        - stock_quantity (int): Свойство для получения и установки количества продукта на складе. Требуется реализация
+                                геттера и сеттера в дочерних классах.
+    """
+
+    @abstractmethod
+    def __str__(self) -> str:
+        pass
+
+    @abstractmethod
+    def __add__(self, other: 'AbstractProduct') -> float:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def check_unique_items(products: list) -> list:
+        pass
+
+    @property
+    @abstractmethod
+    def price(self) -> float:
+        pass
+
+    @price.setter
+    @abstractmethod
+    def price(self, new_price: float) -> None:
+        pass
+
+    @property
+    @abstractmethod
+    def stock_quantity(self) -> int:
+        pass
+
+    @stock_quantity.setter
+    @abstractmethod
+    def stock_quantity(self, new_stock_quantity: int) -> None:
+        pass
+
+
+class MixinCreateLog:
+    """
+    Миксин для создания логового сообщения при создании объекта класса.
+
+    Этот миксин предоставляет статический метод для генерации стандартизированного сообщения лога о создании объекта.
+    Генерируемое сообщение включает в себя представление объекта и обрамляется специальными маркерами начала
+    и окончания лога. В конструкторе класса автоматически вызывается метод логгирования, что обеспечивает запись лога
+    при каждом создании экземпляра класса или его наследников.
+    """
+
+    def __init__(self) -> None:
+        """
+        Методы:
+            - __init__(self): Инициализирует экземпляр класса, автоматически создавая и печатая лог о создании объекта.
+            - create_log_message(object_representation): Принимает строковое представление объекта и возвращает
+                                                         форматированное сообщение лога.
+
+        Пример использования:
+            # Создание класса, включающего MixinCreateLog
+            class MyObject(MixinCreateLog):
+                pass
+
+            # Создание экземпляра MyObject автоматически генерирует лог
+            obj = MyObject()
+        """
+
+        print("\033[32m{}\033[0m".format(self.create_log_message(repr(self))))
+
+    @staticmethod
+    def create_log_message(object_representation: str) -> str:
+        """
+        Генерирует и возвращает форматированное сообщение лога.
+
+        :param object_representation: Строковое представление объекта для включения в сообщение лога.
+        :return: Сформированное сообщение лога с указанием созданного объекта.
+        """
+
+        return (
+            f"\n"
+            f"###\t   LOG    \t###\n"
+            f"Создан объект: {object_representation}\n"
+            f"###\tEND OF LOG\t###"
+            f"\n"
+        )
+
+
+class Product(AbstractProduct, MixinCreateLog):
     """
     Класс Продукт представляет сущность товара на складе или в магазине.
     """
@@ -28,8 +131,7 @@ class Product:
             - __str__(self): Возвращает строковое представление продукта для пользователя.
             - __add__(self, other): Возвращает результирующую сумму (с учетом количества на складе) 2-х объектов типа
                                     Product.
-            - create_product(cls, name, description, price, stock_quantity): Классовый метод для создания и возвращения
-                                                                             нового экземпляра продукта.
+            - create_product(cls, prod): Классовый метод для создания и возвращения нового экземпляра продукта.
             - check_unique_items(products): Статический метод для проверки списка продуктов на уникальность исходя
                                             из их имени и корректного подсчета общего количества и максимальной цены
                                             для одинаковых имён продуктов.
@@ -49,6 +151,7 @@ class Product:
         self.__price = price
         self.__stock_quantity = stock_quantity
         self.color = color
+        super().__init__()
 
     def __repr__(self) -> str:
         """
@@ -198,10 +301,10 @@ class Smartphone(Product):
                                        prod.
         """
 
-        super().__init__(name, description, price, stock_quantity, color)
         self.efficiency = efficiency
         self.model_name = model_name
         self.internal_memory = internal_memory
+        super().__init__(name, description, price, stock_quantity, color)
 
     def __repr__(self) -> str:
         """
@@ -211,9 +314,8 @@ class Smartphone(Product):
             str: Строковое представление объекта.
         """
 
-        return (f"Parent: {super().__class__.__name__}\n{self.__class__.__name__}({self.name}, {self.description}, "
-                f"{self.price}, {self.stock_quantity}, {self.efficiency}, {self.model_name}, {self.internal_memory}, "
-                f"{self.color})")
+        return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.stock_quantity}, "
+                f"{self.efficiency}, {self.model_name}, {self.internal_memory}, {self.color})")
 
     @classmethod
     def create_product(cls, prod: dict) -> 'Smartphone':
@@ -266,9 +368,9 @@ class LawnGrass(Product):
                                        prod.
         """
 
-        super().__init__(name, description, price, stock_quantity, color)
         self.origin_country = origin_country
         self.germination_period = germination_period
+        super().__init__(name, description, price, stock_quantity, color)
 
     def __repr__(self) -> str:
         """
@@ -278,9 +380,8 @@ class LawnGrass(Product):
             str: Строковое представление объекта.
         """
 
-        return (f"Parent: {super().__class__.__name__}\n{self.__class__.__name__}({self.name}, {self.description}, "
-                f"{self.price}, {self.stock_quantity}, {self.origin_country}, {self.germination_period}, "
-                f"{self.color})")
+        return (f"{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.stock_quantity}, "
+                f"{self.origin_country}, {self.germination_period}, {self.color})")
 
     @classmethod
     def create_product(cls, prod: dict) -> 'LawnGrass':
