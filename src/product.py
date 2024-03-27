@@ -1,7 +1,16 @@
 from typing import Union
+from abc import ABC, abstractmethod
 
 
-class Product:
+class AbstractProduct(ABC):
+
+    @classmethod
+    @abstractmethod
+    def create_product(cls, prod: dict):
+        pass
+
+
+class Product(AbstractProduct):
     """
     Класс Продукт представляет сущность товара на складе или в магазине.
     """
