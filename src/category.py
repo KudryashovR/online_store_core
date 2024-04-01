@@ -84,8 +84,11 @@ class Category:
         """
 
         if isinstance(new_product, Product):
-            self.__prod.append(new_product)
-            self.total_unique_products += 1
+            if new_product.stock_quantity == 0:
+                raise ValueError("Товар с нулевым количеством не может быть добавлен.")
+            else:
+                self.__prod.append(new_product)
+                self.total_unique_products += 1
         else:
             raise ValueError("Тип добавляемого объекта не соответствует категории")
 
