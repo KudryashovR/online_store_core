@@ -35,6 +35,7 @@ class Category:
             - add_prod(self, new_product): Добавляет новый продукт в категорию.
             - product (property): Возвращает информацию о всех продуктах в категории в удобочитаемом формате.
             - prod (property): Геттер для доступа к списку продуктов в категории.
+            - avg_price(self): Подсчет среднего ценника товаров в категории.
 
         Примечание:
             Для добавления продуктов используется метод add_prod. Продукт должен быть объектом класса, поддерживающего
@@ -64,7 +65,7 @@ class Category:
         Возвращает строковое представление объекта категории для пользователя.
         """
 
-        return f"{self.name}, количество продуктов: {len(self)} шт."
+        return f"{self.name}, количество продуктов: {len(self)} шт. (Средняя цена: {self.avg_price()} руб.)"
 
     def __len__(self) -> int:
         """
@@ -112,6 +113,25 @@ class Category:
         """
 
         return self.__prod
+
+    def avg_price(self):
+        """
+        Подсчет среднего ценника товаров в категории.
+        """
+
+        price_sum = 0
+        product_count = 0
+
+        for product in self.prod:
+            price_sum += product.price
+            product_count += 1
+
+        try:
+            result = price_sum / product_count
+        except ZeroDivisionError:
+            return 0
+        else:
+            return round(result, 2)
 
 
 class CategoryIter:
