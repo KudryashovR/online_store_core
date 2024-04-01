@@ -4,6 +4,7 @@ import os
 from src.category import Category, CategoryIter
 from src.product import Product, Smartphone, LawnGrass
 from src.order import Order
+from src.exceptions import AddZeroQuantityException
 
 
 def load_products(filename: str) -> dict:
@@ -77,22 +78,36 @@ def category_init(categories: dict) -> list:
         products = Product.check_unique_items(products)
 
         for prod in products:
+            prod_name = prod["name"]
+
             match item["name"]:
                 case "Смартфоны":
                     try:
                         categories_list[index].add_prod(Smartphone.create_product(prod))
-                    except ValueError as err:
+                    except AddZeroQuantityException as err:
                         exit(err)
+                    else:
+                        print(f"Товар {prod_name} успешно добавлен")
+                    finally:
+                        print("Операция добавления товара завершена")
                 case "Трава газонная":
                     try:
                         categories_list[index].add_prod(LawnGrass.create_product(prod))
-                    except ValueError as err:
+                    except AddZeroQuantityException as err:
                         exit(err)
+                    else:
+                        print(f"Товар {prod_name} успешно добавлен")
+                    finally:
+                        print("Операция добавления товара завершена")
                 case _:
                     try:
                         categories_list[index].add_prod(Product.create_product(prod))
-                    except ValueError as err:
+                    except AddZeroQuantityException as err:
                         exit(err)
+                    else:
+                        print(f"Товар {prod_name} успешно добавлен")
+                    finally:
+                        print("Операция добавления товара завершена")
 
     return categories_list
 
@@ -210,5 +225,10 @@ def get_order(categories_list: list, buying_product_name: str) -> None:
         for prod in CategoryIter(item):
             if prod.name == buying_product_name:
                 print()
-                print("\033[31m{}\033[0m".format(Order(prod, buying_product_quantity)))
-                print()
+
+                try:
+                    print("\033[31m{}\033[0m".format(Order(prod, buying_product_quantity)))
+                except AddZeroQuantityException as err:
+                    print(err)
+                finally:
+                    print()
