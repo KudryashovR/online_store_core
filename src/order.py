@@ -1,4 +1,5 @@
 from src.product import Product
+from src.exceptions import AddZeroQuantityException
 
 
 class Order:
@@ -7,7 +8,10 @@ class Order:
 
     def __init__(self, prod: 'Product', buying_quantity: int) -> None:
         self.prod = prod
-        self.buying_quantity = buying_quantity
+        if buying_quantity == 0:
+            raise AddZeroQuantityException()
+        else:
+            self.buying_quantity = buying_quantity
 
     def get_total_price(self) -> float:
         return self.buying_quantity * self.prod.price

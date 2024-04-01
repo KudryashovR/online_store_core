@@ -2,6 +2,7 @@ from typing import Union
 
 
 from src.product import Product, Smartphone, LawnGrass
+from src.exceptions import AddZeroQuantityException
 
 
 class Category:
@@ -86,7 +87,7 @@ class Category:
 
         if isinstance(new_product, Product):
             if new_product.stock_quantity == 0:
-                raise ValueError("Товар с нулевым количеством не может быть добавлен.")
+                raise AddZeroQuantityException()
             else:
                 self.__prod.append(new_product)
                 self.total_unique_products += 1
