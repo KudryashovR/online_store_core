@@ -4,6 +4,7 @@ import os
 from src.category import Category, CategoryIter
 from src.product import Product, Smartphone, LawnGrass
 from src.order import Order
+from src.exceptions import AddZeroQuantityException
 
 
 def load_products(filename: str) -> dict:
@@ -43,24 +44,30 @@ def load_products(filename: str) -> dict:
 
 def category_init(categories: dict) -> list:
     """
-    Инициализирует и возвращает список категорий, каждая из которых включает в себя уникальные продукты.
+    Инициализирует и возвращает список объектов класса Category, каждый из которых содержит список уникальных продуктов.
 
-    Принимает на вход список категорий, где каждая категория представлена словарем с ключами 'name' (название
-    категории), 'description' (описание категории) и 'products' (список продуктов, принадлежащих к категории). Каждый
-    продукт в списке также представляется словарем с необходимыми атрибутами для создания соответствующего объекта
-    продукта (например, 'name', 'description', 'price', 'quantity' и дополнительные атрибуты в зависимости от типа
-    продукта).
+    Каждая категория во входном списке должна быть представлена словарём со следующими ключами:
+        - 'name': строка, название категории
+        - 'description': строка, описание категории
+        - 'products': список словарей, каждый из которых представляет продукт и должен содержать атрибуты, необходимые
+                      для создания экземпляра соответствующего продуктового класса. Как минимум, эти атрибуты включают
+                      'name', 'description', 'price', 'quantity', а также могут включать дополнительные атрибуты,
+                      специфичные для различных типов продуктов.
 
-    Для каждой категории создается объект класса Category. Продукты в каждой категории проверяются на уникальность
-    с помощью статического метода check_unique_items класса Product. Для каждого уникального продукта определяется его
-    тип и на основании этого создается соответствующий объект (например, Smartphone или LawnGrass) с помощью
-    классового метода create_product. Созданные объекты продуктов добавляются в свои категории.
+    Функция проводит следующие операции для каждой категории:
+        1. Создаёт объект класса Category.
+        2. Проверяет продукты на уникальность в рамках категории с использованием статического метода check_unique_items
+           класса Product.
+        3. Определяет тип каждого продукта и создаёт соответствующий продуктовый объект (например, Smartphone
+           или LawnGrass), используя классовый метод create_product.
+        4. Добавляет созданные объекты продуктов в соответствующие категории.
 
-    :param categories: Список словарей, представляющих категории. Каждый словарь содержит ключи 'name' и 'description'
-                       для категории и 'products' — список словарей продуктов. Продукты имеют атрибуты, необходимые
-                       для их идентификации и создания объектов соответствующих классов.
-    :return: Список объектов класса Category, в котором каждый объект содержит список уникальных продуктов,
-             соответствующих данной категории и добавленных с учетом их спецификации (например, тип продукта).
+    Создание объектов продуктов и добавление их в категории может сопровождаться возникновением исключений ValueError,
+    что приведёт к немедленному прекращению работы функции.
+
+    :param categories: Список словарей, представляющих категории и их продукты.
+    :return: Список объектов класса Category, каждый из которых содержит уникальные продукты, соответствующие
+             его категории.
     """
 
     categories_list = []
@@ -71,13 +78,36 @@ def category_init(categories: dict) -> list:
         products = Product.check_unique_items(products)
 
         for prod in products:
+            prod_name = prod["name"]
+
             match item["name"]:
                 case "Смартфоны":
-                    categories_list[index].add_prod(Smartphone.create_product(prod))
+                    try:
+                        categories_list[index].add_prod(Smartphone.create_product(prod))
+                    except AddZeroQuantityException as err:
+                        exit(err)
+                    else:
+                        print(f"Товар {prod_name} успешно добавлен")
+                    finally:
+                        print("Операция добавления товара завершена")
                 case "Трава газонная":
-                    categories_list[index].add_prod(LawnGrass.create_product(prod))
+                    try:
+                        categories_list[index].add_prod(LawnGrass.create_product(prod))
+                    except AddZeroQuantityException as err:
+                        exit(err)
+                    else:
+                        print(f"Товар {prod_name} успешно добавлен")
+                    finally:
+                        print("Операция добавления товара завершена")
                 case _:
-                    categories_list[index].add_prod(Product.create_product(prod))
+                    try:
+                        categories_list[index].add_prod(Product.create_product(prod))
+                    except AddZeroQuantityException as err:
+                        exit(err)
+                    else:
+                        print(f"Товар {prod_name} успешно добавлен")
+                    finally:
+                        print("Операция добавления товара завершена")
 
     return categories_list
 
@@ -195,5 +225,10 @@ def get_order(categories_list: list, buying_product_name: str) -> None:
         for prod in CategoryIter(item):
             if prod.name == buying_product_name:
                 print()
-                print("\033[31m{}\033[0m".format(Order(prod, buying_product_quantity)))
-                print()
+
+                try:
+                    print("\033[31m{}\033[0m".format(Order(prod, buying_product_quantity)))
+                except AddZeroQuantityException as err:
+                    print(err)
+                finally:
+                    print()
